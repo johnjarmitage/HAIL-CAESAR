@@ -94,7 +94,7 @@ void LSDGrainMatrix::write_grainMatrix_to_ascii_file(std::string filename,
           }
           
           // Now write the subsurface grain fractions
-          for(int z=0; z<=9; z++) // Loop through subsurface layers...
+          for(int z=0; z<=(GrainFracMax-1); z++) // Loop through subsurface layers...
           {
             for(int inc=0; inc<=(GrainFracMax-2); inc++)
             {
