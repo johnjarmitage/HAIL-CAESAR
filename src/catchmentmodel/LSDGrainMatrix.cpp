@@ -54,6 +54,7 @@ void LSDGrainMatrix::create(int imax, int jmax, int NoDataVal, int G_MAX)
   NoData = NoDataVal;
   GrainFracMax = G_MAX;
   std::cout << "Initialised a Grain Matrix..." << std::endl;
+  std::cout << "G_MAX is: " << G_MAX << std::endl;
 }
 
 void LSDGrainMatrix::write_grainMatrix_to_ascii_file(std::string filename, 

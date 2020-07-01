@@ -46,13 +46,15 @@
 
 using namespace LSDUtils;
 
+const unsigned int G_MAX=10;
+
 int main(int argc, char *argv[])
 {
 
   std::cout << "##################################" << std::endl;
   std::cout << "#  CATCHMENT HYDROGEOMORPHOLOGY  #" << std::endl;
   std::cout << "#        MODEL version 1.0       #" << std::endl;
-  std::cout << "#          (HAIL-CAESAR)         #" << std::endl;
+  std::cout << "#          (HAIL-CAESAR)      ** #" << std::endl;
   std::cout << "##################################" << std::endl;
   std::cout << " Version: "<< CHM_VERS << std::endl;
   std::cout << " at git commit number: " GIT_REVISION << std::endl;
@@ -98,10 +100,15 @@ int main(int argc, char *argv[])
   // Create a catchment model object initialising the model
   // domain extents from the DEM header.
   LSDCatchmentModel simulation(pname, pfname);
+  std::cout << "Here 1" << std::endl;
   simulation.initialise_model_domain_extents();
+  std::cout << "Here 2" << std::endl;
   simulation.initialise_arrays();
+  std::cout << "Here 3" << std::endl;
   simulation.load_data();
+  std::cout << "Here 4" << std::endl;
   simulation.set_time_counters();
+  std::cout << "Here 5" << std::endl;
 
   // Create a runoff object, a grid to manage the input
   // of rainfall to the catchment domain.

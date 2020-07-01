@@ -138,6 +138,7 @@ void LSDCatchmentModel::initialise_model_domain_extents()
 
 void LSDCatchmentModel::load_data()
 {
+  std::cout << "Here 4" << std::endl;
   LSDRaster elevR;
   /// Hydroindex LSDRaster: tells rainfall input where to be distributed
   LSDRaster hydroindexR;
@@ -155,6 +156,8 @@ void LSDCatchmentModel::load_data()
     exit(EXIT_FAILURE);
   }
 
+  std::cout << "Here 5" << std::endl;
+
   // Read in the elevation raster data from file, setting the elevation LSDRaster
   // object, 'elevR'
   try
@@ -164,8 +167,12 @@ void LSDCatchmentModel::load_data()
     // Headers are accessed by elevR.get_Ncols(), elevR.get_NRows() etc
     // Raster is accessed by elevR.get_RasterData_dbl() (type: TNT::Array2D<double>)
 
+    std::cout << "Here 6" << std::endl;
+
     // Load the raw ascii raster data
     TNT::Array2D<double> raw_elev = elevR.get_RasterData_dbl();
+
+    std::cout << "Here 7" << std::endl;
 
     // We want an edge pixel of zeros surrounding the raster data
     // So start the counters at one, rather than zero, this
@@ -298,6 +305,7 @@ void LSDCatchmentModel::load_data()
     #endif
 
   }
+
   // Read grainsize data for restart runs
   if (graindata_from_file == true)
   {
@@ -383,7 +391,7 @@ void LSDCatchmentModel::ingest_graindata_from_file(
       {
         for (unsigned n=0; n<=(G_MAX-2); n++)
         {
-          if (col_counter == (4+G_MAX+n+1) + z*(G_MAX-1))  // watchout here, replaced 9 with G_MAX-1
+          if (col_counter == (4+G_MAX+n+1) + z*9)  // watchout here, replaced 9 with G_MAX-1
           {
             strata[grain_array_tot][z][n] = std::stod(line_vector[x]);
           }
