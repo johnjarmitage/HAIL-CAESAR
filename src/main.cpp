@@ -46,8 +46,6 @@
 
 using namespace LSDUtils;
 
-const unsigned int G_MAX=10;
-
 int main(int argc, char *argv[])
 {
 
