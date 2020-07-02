@@ -3053,7 +3053,7 @@ void LSDCatchmentModel::addGS(int x, int y)
   grain[grain_array_tot][G_MAX] = 0;
 
 
-  for (unsigned n = 0; n <= GMAX-1; n++)
+  for (unsigned n = 0; n <= G_MAX-1; n++)
   {
       for (unsigned n2 = 0; n2 <= G_MAX-2; n2++ )
       {
