@@ -1163,18 +1163,19 @@ void LSDCatchmentModel::initialise_arrays()
 // Hard coded! - Should make this read from sediment details file.
 // DAV 3/12/2015
 // TODO Allow user to set these values.
+// Only the grainsize [1] is ssspended !!
 void LSDCatchmentModel::set_fall_velocities()
 {
-  fallVelocity[0] = 0.0;
+  //fallVelocity[0] = 0.0;
   fallVelocity[1] = 0.033;
-  fallVelocity[2] = 0.109;
-  fallVelocity[3] = 0.164;
-  fallVelocity[4] = 0.237;
-  fallVelocity[5] = 0.338;
-  fallVelocity[6] = 0.479;
-  fallVelocity[7] = 0.678;
-  fallVelocity[8] = 0.959;
-  fallVelocity[9] = 1.357;
+  //fallVelocity[2] = 0.109;
+  //fallVelocity[3] = 0.164;
+  //fallVelocity[4] = 0.237;
+  //fallVelocity[5] = 0.338;
+  //fallVelocity[6] = 0.479;
+  //fallVelocity[7] = 0.678;
+  //fallVelocity[8] = 0.959;
+  // fallVelocity[9] = 1.357;
 }
 
 void LSDCatchmentModel::set_time_counters()

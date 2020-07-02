@@ -820,6 +820,7 @@ void LSDRaster::read_ascii_raster(string FILENAME)
   std::cout << "NCols: " << NCols << " str: " << std::endl;
   data_in >> str >> NRows;
   std::cout << "NRows: " << NRows << " str: " << std::endl;
+
   data_in >> str >> XMinimum
           >> str >> YMinimum
           >> str >> DataResolution
