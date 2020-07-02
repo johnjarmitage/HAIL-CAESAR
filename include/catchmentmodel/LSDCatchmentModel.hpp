@@ -423,7 +423,7 @@ private:
   const int ACTIVE_FACTOR=1;
   const int TRUE=1;
   const int FALSE=0;
-  const unsigned int G_MAX=8;
+  const unsigned int G_MAX=10;
   const std::array<int, 9> deltaX = {{0,  0,  1,  1,  1,  0, -1, -1, -1}};
   const std::array<int, 9> deltaY = {{0, -1, -1,  0,  1,  1,  1,  0, -1}};
 

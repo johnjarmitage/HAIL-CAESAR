@@ -376,7 +376,7 @@ void LSDCatchmentModel::ingest_graindata_from_file(
       }
 
       // Next bunch of columns are grain fractions (surface). Update them.
-      for(unsigned n=0; n<=G_MAX; n++)  // G_MAX or G_MAX-1
+      for(unsigned n=0; n<=G_MAX; n++)
       {
         if (col_counter==4+n)
         {
@@ -387,11 +387,13 @@ void LSDCatchmentModel::ingest_graindata_from_file(
       // Now the fractions for the subsuface strata,
       // note that this is currently hard coded as 10 layers
       // so when you update to have user-defined no. of strata, recompile
-      for(int z=0; z<=G_MAX-1; z++)
+      for(int z=0; z<=9; z++)  // 9 or G_MAX-1 ?
       {
         for (unsigned n=0; n<=(G_MAX-2); n++)
         {
-          if (col_counter == (4+G_MAX+n+1) + z*9)  // watchout here, replaced 9 with G_MAX-1
+
+          if (col_counter == (4+G_MAX+n+1) + (z*9))  // 9 or G_MAX-1 ?
+
           {
             strata[grain_array_tot][z][n] = std::stod(line_vector[x]);
           }
@@ -2991,7 +2993,7 @@ void LSDCatchmentModel::sort_active(int x,int y)
     // start from bottom
     // remove bottom active layer
     // then move all from layer above into one below, up to the top layer
-    for(unsigned z=G_MAX-1;z>=1;z--)
+    for(unsigned z=9;z>=1;z--)
     {
       for(unsigned n=0;n<=G_MAX-2;n++)
       {
@@ -3022,7 +3024,7 @@ void LSDCatchmentModel::sort_active(int x,int y)
     }
 
     // then from top down add lower strata into upper
-    for(unsigned z=0;z<=G_MAX-2;z++)
+    for(unsigned z=0;z<=8;z++)
     {
       for(unsigned n=0;n<=G_MAX-2;n++)
       {
@@ -3032,7 +3034,7 @@ void LSDCatchmentModel::sort_active(int x,int y)
 
     // add new layer at the bottom
     amount = active;
-    int z = G_MAX-1;
+    int z = 9;
     for (unsigned n=1; n<=G_MAX-1; n++)
     {
         strata[xyindex][z][n-1] = amount * dprop[n];
@@ -3057,7 +3059,7 @@ void LSDCatchmentModel::addGS(int x, int y)
   grain[grain_array_tot][G_MAX] = 0;
 
 
-  for (unsigned n = 0; n <= G_MAX-1; n++)
+  for (unsigned n = 0; n <= 9; n++) // Do we always need 9 strata? Future improvement?
   {
       for (unsigned n2 = 0; n2 <= G_MAX-2; n2++ )
       {
@@ -3082,7 +3084,7 @@ double LSDCatchmentModel::sand_fraction(int index1)
 
   double active_thickness=0;
   double sand_total=0;
-  for(unsigned n =1;n<=G_MAX;n++)  // elsewhere G_MAX-1 is used.
+  for(unsigned n =1;n<=G_MAX;n++)
   {
     active_thickness+=(grain[index1][n]);
   }
@@ -3137,7 +3139,7 @@ double LSDCatchmentModel::d50(int index1)
   double Dfifty=0,max=0,min=0;
   std::array<double, 20> cum_tot{};  // std::array only C++11
 
-  for(unsigned n=1;n<=G_MAX;n++) // elsewhere G_MAX-1 is used.
+  for(unsigned n=1;n<=G_MAX;n++)
   {
     for(unsigned z=0;z<=(0);z++)
     {
@@ -3148,7 +3150,7 @@ double LSDCatchmentModel::d50(int index1)
 
 
   int i=1;
-  while(cum_tot[i]<(active_thickness*0.5) && i<=G_MAX-1)
+  while(cum_tot[i]<(active_thickness*0.5) && i<=9)
   {
     i++;
   }
@@ -3346,7 +3348,7 @@ double LSDCatchmentModel::erode(double mult_factor)
         Vel[x][y] = 0;
         Tau[x][y] = 0;
 
-        for (unsigned n = 0; n <= G_MAX-1; n++)
+        for (unsigned n = 0; n < G_MAX; n++)
         {
           sr[x][y][n] = 0;
           sl[x][y][n] = 0;
@@ -3437,7 +3439,7 @@ double LSDCatchmentModel::erode(double mult_factor)
               d_50 = d50(index[x][y]);
               if (d_50 < d1) d_50 = d1;
               Fs = sand_fraction(index[x][y]);
-              for (unsigned n = 1; n <= G_MAX; n++)graintot += (grain[index[x][y]][n]);  // elsewhere G_MAX-1 is used.
+              for (unsigned n = 1; n <= G_MAX; n++)graintot += (grain[index[x][y]][n]);
             }
 
             double temptot1 = 0;
