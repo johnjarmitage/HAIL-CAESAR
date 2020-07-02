@@ -1141,13 +1141,13 @@ void LSDCatchmentModel::initialise_arrays()
   // Only need these ones for erosion-enabled simulation runs
   if (!hydro_only)
   {
-    sr = TNT::Array3D<double> (imax + 2, jmax + 2, 10, 0.0);
-    sl = TNT::Array3D<double> (imax + 2, jmax + 2, 10, 0.0);
-    su = TNT::Array3D<double> (imax + 2, jmax + 2, 10, 0.0);
-    sd = TNT::Array3D<double> (imax + 2, jmax + 2, 10, 0.0);
+    sr = TNT::Array3D<double> (imax + 2, jmax + 2, G_MAX, 0.0);
+    sl = TNT::Array3D<double> (imax + 2, jmax + 2, G_MAX, 0.0);
+    su = TNT::Array3D<double> (imax + 2, jmax + 2, G_MAX, 0.0);
+    sd = TNT::Array3D<double> (imax + 2, jmax + 2, G_MAX, 0.0);
     ss = TNT::Array2D<double> (imax + 2, jmax + 2, 0.0);
 
-    strata = TNT::Array3D<double> ( ((imax+2)*(jmax+2))/LIMIT , 10, G_MAX+1, 0.0);
+    strata = TNT::Array3D<double> ( ((imax+2)*(jmax+2))/LIMIT , G_MAX, G_MAX+1, 0.0);
     grain = TNT::Array2D<double> ( ((2+imax)*(jmax+2))/LIMIT, G_MAX+1 , 0.0);
     temp_grain = std::vector<double> (G_MAX+1, 0.0);
   }
@@ -2987,7 +2987,7 @@ void LSDCatchmentModel::sort_active(int x,int y)
     // start from bottom
     // remove bottom active layer
     // then move all from layer above into one below, up to the top layer
-    for(unsigned z=9;z>=1;z--)
+    for(unsigned z=G_MAX-1;z>=1;z--)
     {
       for(unsigned n=0;n<=G_MAX-2;n++)
       {
@@ -3018,7 +3018,7 @@ void LSDCatchmentModel::sort_active(int x,int y)
     }
 
     // then from top down add lower strata into upper
-    for(unsigned z=0;z<=8;z++)
+    for(unsigned z=0;z<=G_MAX-2;z++)
     {
       for(unsigned n=0;n<=G_MAX-2;n++)
       {
@@ -3028,7 +3028,7 @@ void LSDCatchmentModel::sort_active(int x,int y)
 
     // add new layer at the bottom
     amount = active;
-    int z = 9;
+    int z = G_MAX-1;
     for (unsigned n=1; n<=G_MAX-1; n++)
     {
         strata[xyindex][z][n-1] = amount * dprop[n];
@@ -3053,7 +3053,7 @@ void LSDCatchmentModel::addGS(int x, int y)
   grain[grain_array_tot][G_MAX] = 0;
 
 
-  for (unsigned n = 0; n <= 9; n++) // Do we always need 9 strata? Future improvement?
+  for (unsigned n = 0; n <= GMAX-1; n++)
   {
       for (unsigned n2 = 0; n2 <= G_MAX-2; n2++ )
       {
@@ -3135,7 +3135,7 @@ double LSDCatchmentModel::d50(int index1)
 
   for(unsigned n=1;n<=G_MAX;n++)
   {
-    for(unsigned z=0;z<=(0);z++)
+    for(unsigned z=0;z<=(0);z++)  // interesting?
     {
       active_thickness+=(grain[index1][n]);
       cum_tot[n]+=active_thickness;
@@ -3144,7 +3144,7 @@ double LSDCatchmentModel::d50(int index1)
 
 
   int i=1;
-  while(cum_tot[i]<(active_thickness*0.5) && i<=9)
+  while(cum_tot[i]<(active_thickness*0.5) && i<=G_MAX-1)
   {
     i++;
   }
@@ -5066,7 +5066,6 @@ void LSDCatchmentModel::print_parameters()
   // Grain distribution
   std::cout << "~~~~~~GRAIN SIZE DETAILS~~~~~~~" << std::endl;
   std::cout << "| PROP |" << " SIZE |" << "| FALL VELOCITY   |" << std::endl;
-  std::cout << dprop[1] << " | " << d1 << " | " << fallVelocity[1] << std::endl;
   std::cout << dprop[2] << " | " << d2 << " | " << fallVelocity[2] << std::endl;
   std::cout << dprop[3] << " | " << d3 << " | " << fallVelocity[3] << std::endl;
   std::cout << dprop[4] << " | " << d4 << " | " << fallVelocity[4] << std::endl;
