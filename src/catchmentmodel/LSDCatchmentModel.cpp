@@ -1155,7 +1155,10 @@ void LSDCatchmentModel::initialise_arrays()
   // Tells program whether sediment is suspended fraction or not
   isSuspended = std::vector<bool>(G_MAX+1, false);
   fallVelocity = std::vector<double>(G_MAX+1, 0.0);
+  dprop = std::vector<double>(G_MAX+1, 0.0);
+  dsize = std::vector<double>(G_MAX+1, 0.0);
   set_fall_velocities();
+  read_graindata();
   // Not entirely sure this is necessary? - TODO DAV
   zero_values();
 }
@@ -1176,6 +1179,46 @@ void LSDCatchmentModel::set_fall_velocities()
   //fallVelocity[7] = 0.678;
   //fallVelocity[8] = 0.959;
   // fallVelocity[9] = 1.357;
+}
+
+// Function to read in the grainsize data
+void LSDCatchmentModel::read_graindata()
+{
+    std::cout << "Reading grainsize data file..." << std::endl;
+    // Concatenate the path and graindata file name to get the full file address
+    std::string graindata_file = "graindata.txt";
+    std::string full_name = read_path+graindata_file;
+
+    std::ifstream infile;
+    // Open the graindata file
+    infile.open(full_name.c_str());
+
+    std::cout << "Graindata filename is: " << full_name << std::endl;
+
+    // Read the Data from the file
+    // as String Vector
+    std::vector<std::string> row;
+    std::vector<double> vfall (G_MAX-1, 0.0);
+    std::string line, word;
+    int n = 0;
+
+    while(getline(infile, line)) {
+        if(line.empty() || (line.find("#") == 0)) {
+            continue;
+        }
+        istringstream buf(line);
+        for(string word; buf >> word; )
+            row.push_back(word);
+        dprop[n] = stod(row[0]);
+        std::cout << "dprop: " << dprop[n] << std::endl;
+        dsize[n] = stod(row[1]);
+        std::cout << "dsize: " << dsize[n] << std::endl;
+        vfall[n] = stod(row[2]);
+        std::cout << "vfall: " << vfall[n] << std::endl;
+        n++;
+        row.clear();
+    }
+    infile.close();
 }
 
 void LSDCatchmentModel::set_time_counters()
@@ -3440,18 +3483,7 @@ double LSDCatchmentModel::erode(double mult_factor)
 
             for (unsigned int n = 1; n <= G_MAX-1; n++)
             {
-              switch (n)
-              {
-                case 1: Di = d1; break;
-                case 2: Di = d2; break;
-                case 3: Di = d3; break;
-                case 4: Di = d4; break;
-                case 5: Di = d5; break;
-                case 6: Di = d6; break;
-                case 7: Di = d7; break;
-                case 8: Di = d8; break;
-                case 9: Di = d9; break;
-              }
+              Di = dsize[n];
 
               // Wilcock and Crowe/Curran
 
@@ -4909,18 +4941,7 @@ void LSDCatchmentModel::soil_development()
           {
             if ((grain[xyindex][n] > 0.0))
             {
-              switch (n)
-              {
-                case 1: Di = d1; break;
-                case 2: Di = d2; break;
-                case 3: Di = d3; break;
-                case 4: Di = d4; break;
-                case 5: Di = d5; break;
-                case 6: Di = d6; break;
-                case 7: Di = d7; break;
-                case 8: Di = d8; break;
-                case 9: Di = d9; break;
-              }
+              Di = dsize[n];
 
               double amount = grain[xyindex][n] * ((-(k1 * std::exp(-c1 * active * 0.5) * (c2 / std::log(Di * 0.001)) * 1)) / 12); //  / 12 to make it months
               grain[xyindex][n] -= amount;
@@ -4934,7 +4955,7 @@ void LSDCatchmentModel::soil_development()
                 grain[xyindex][n - 2] += amount * 0.95;
               }
 
-              for (int z = 1; z <= 9; z++)
+              for (int z = 1; z <= G_MAX-1; z++)
               {
                 // What is this actually needed for? check original implementation
                 double amount2 = strata[xyindex][z - 1][n] * ((-(k1 * std::exp(-c1 * active * z) * (c2 / std::log(Di * 0.001)) * 1)) / 12); //  / 12 to make it months
@@ -5066,14 +5087,8 @@ void LSDCatchmentModel::print_parameters()
   // Grain distribution
   std::cout << "~~~~~~GRAIN SIZE DETAILS~~~~~~~" << std::endl;
   std::cout << "| PROP |" << " SIZE |" << "| FALL VELOCITY   |" << std::endl;
-  std::cout << dprop[2] << " | " << d2 << " | " << fallVelocity[2] << std::endl;
-  std::cout << dprop[3] << " | " << d3 << " | " << fallVelocity[3] << std::endl;
-  std::cout << dprop[4] << " | " << d4 << " | " << fallVelocity[4] << std::endl;
-  std::cout << dprop[5] << " | " << d5 << " | " << fallVelocity[5] << std::endl;
-  std::cout << dprop[6] << " | " << d6 << " | " << fallVelocity[6] << std::endl;
-  std::cout << dprop[7] << " | " << d7 << " | " << fallVelocity[7] << std::endl;
-  std::cout << dprop[8] << " | " << d8 << " | " << fallVelocity[8] << std::endl;
-  std::cout << dprop[9] << " | " << d9 << " | " << fallVelocity[9] << std::endl;
+  for (unsigned n=0; n<=G_MAX-1; n++)
+	  std::cout << dprop[n] << " | " << dsize[n] << " | " << fallVelocity[n] << std::endl;
 
   std::cout << "SEDIMENT LAW:                  ";
     if (einstein) std::cout << "Einstein" << std::endl;

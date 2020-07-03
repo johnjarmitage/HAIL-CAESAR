@@ -100,7 +100,6 @@ int main(int argc, char *argv[])
   LSDCatchmentModel simulation(pname, pfname);
   simulation.initialise_model_domain_extents();
   simulation.initialise_arrays();
-  std::cout << "Crash occurs on load data" << std::endl;
   simulation.load_data();
   simulation.set_time_counters();
 

@@ -273,6 +273,12 @@ public:
   /// @author DAV
   void set_fall_velocities();
 
+  /// @brief Reads in the sediment grainsize info
+  /// @details Sediment proportions, grainsize and fall velocities are read
+  /// in from a file graindata.txt
+  /// @author JJA
+  void read_graindata();
+
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // SLOPE PROCESS COMPONENTS
   // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -423,7 +429,7 @@ private:
   const int ACTIVE_FACTOR=1;
   const int TRUE=1;
   const int FALSE=0;
-  const unsigned int G_MAX=8;
+  const unsigned int G_MAX=5;
   const std::array<int, 9> deltaX = {{0,  0,  1,  1,  1,  0, -1, -1, -1}};
   const std::array<int, 9> deltaY = {{0, -1, -1,  0,  1,  1,  1,  0, -1}};
 
@@ -542,9 +548,11 @@ private:
   double d7=0.032;
   double d8=0.064;
   double d9=0.128;
+  std::vector<double> dsize;
 
   // std::array<double, 11> dprop = {{0.0, 0.144, 0.022, 0.019, 0.029, 0.068, 0.146, 0.22, 0.231, 0.121, 0.0}}; // Default
-  double dprop[11] = {0.0, 0.05, 0.05, 0.15, 0.225, 0.25, 0.1, 0.075, 0.05, 0.05, 0.0}; // Swale
+  // double dprop[11] = {0.0, 0.05, 0.05, 0.15, 0.225, 0.25, 0.1, 0.075, 0.05, 0.05, 0.0}; // Swale
+  std::vector<double> dprop;
 
   double previous;
   int hours = 0;
