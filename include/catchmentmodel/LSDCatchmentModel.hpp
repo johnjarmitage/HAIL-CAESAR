@@ -429,10 +429,11 @@ private:
   const int ACTIVE_FACTOR=1;
   const int TRUE=1;
   const int FALSE=0;
-  const unsigned int G_MAX=5;
+  //const unsigned int G_MAX=7;
   const std::array<int, 9> deltaX = {{0,  0,  1,  1,  1,  0, -1, -1, -1}};
   const std::array<int, 9> deltaY = {{0, -1, -1,  0,  1,  1,  1,  0, -1}};
 
+  unsigned int G_MAX=7;
   double water_depth_erosion_threshold = 0.01;
   int input_time_step = 60;
   int number_of_points = 0;
@@ -539,15 +540,15 @@ private:
 
   // TO DO: DAV - these could be read from an input file.
   // Swale grainsizes
-  double d1=0.000065;
-  double d2=0.001;
-  double d3=0.002;
-  double d4=0.004;
-  double d5=0.008;
-  double d6=0.016;
-  double d7=0.032;
-  double d8=0.064;
-  double d9=0.128;
+  // double d1=0.000065;
+  // double d2=0.001;
+  // double d3=0.002;
+  // double d4=0.004;
+  // double d5=0.008;
+  // double d6=0.016;
+  // double d7=0.032;
+  // double d8=0.064;
+  // double d9=0.128;
   std::vector<double> dsize;
 
   // std::array<double, 11> dprop = {{0.0, 0.144, 0.022, 0.019, 0.029, 0.068, 0.146, 0.22, 0.231, 0.121, 0.0}}; // Default

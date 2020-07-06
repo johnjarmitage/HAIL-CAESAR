@@ -682,6 +682,14 @@ void LSDCatchmentModel::initialise_variables(std::string pname,
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=
     // Sediment
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+    else if (lower == "number_of_grain_sizes")
+    {
+      G_MAX = atoi(value.c_str());
+      std::cout << "number of grain sizes: " << G_MAX
+    		    << std::endl;
+    }
+
     else if (lower == "read_in_graindata_from_file")
     {
       graindata_from_file = (value == "yes") ? true : false;
@@ -1157,7 +1165,7 @@ void LSDCatchmentModel::initialise_arrays()
   fallVelocity = std::vector<double>(G_MAX+1, 0.0);
   dprop = std::vector<double>(G_MAX+1, 0.0);
   dsize = std::vector<double>(G_MAX+1, 0.0);
-  set_fall_velocities();
+  //set_fall_velocities();
   read_graindata();
   // Not entirely sure this is necessary? - TODO DAV
   zero_values();
@@ -1198,7 +1206,6 @@ void LSDCatchmentModel::read_graindata()
     // Read the Data from the file
     // as String Vector
     std::vector<std::string> row;
-    std::vector<double> vfall (G_MAX-1, 0.0);
     std::string line, word;
     int n = 0;
 
@@ -1213,8 +1220,8 @@ void LSDCatchmentModel::read_graindata()
         std::cout << "dprop: " << dprop[n] << std::endl;
         dsize[n] = stod(row[1]);
         std::cout << "dsize: " << dsize[n] << std::endl;
-        vfall[n] = stod(row[2]);
-        std::cout << "vfall: " << vfall[n] << std::endl;
+        fallVelocity[n] = stod(row[2]);
+        std::cout << "vfall: " << fallVelocity[n] << std::endl;
         n++;
         row.clear();
     }
@@ -3192,15 +3199,16 @@ double LSDCatchmentModel::d50(int index1)
     i++;
   }
 
-  if(i==1){min=std::log(d1);max=std::log(d1);}
-  if(i==2){min=std::log(d1);max=std::log(d2);}
-  if(i==3){min=std::log(d2);max=std::log(d3);}
-  if(i==4){min=std::log(d3);max=std::log(d4);}
-  if(i==5){min=std::log(d4);max=std::log(d5);}
-  if(i==6){min=std::log(d5);max=std::log(d6);}
-  if(i==7){min=std::log(d6);max=std::log(d7);}
-  if(i==8){min=std::log(d7);max=std::log(d8);}
-  if(i==9){min=std::log(d8);max=std::log(d9);}
+  if (i==1)
+  {
+	min = std::log(dsize[i]);
+    max = std::log(dsize[i]);
+  }
+  else
+  {
+  	min = std::log(dsize[i-1]);
+    max = std::log(dsize[i]);
+  }
 
   Dfifty = std::exp(max - ((max - min) * ((cum_tot[i] - (active_thickness * 0.5)) / (cum_tot[i] - cum_tot[i - 1]))));
   if(active_thickness<0.0000001)Dfifty=0;
@@ -3474,7 +3482,7 @@ double LSDCatchmentModel::erode(double mult_factor)
             if (wilcock == 1)
             {
               d_50 = d50(index[x][y]);
-              if (d_50 < d1) d_50 = d1;
+              if (d_50 < dsize[1]) d_50 = dsize[1];
               Fs = sand_fraction(index[x][y]);
               for (unsigned n = 1; n <= G_MAX; n++)graintot += (grain[index[x][y]][n]);
             }
@@ -5086,9 +5094,9 @@ void LSDCatchmentModel::print_parameters()
 
   // Grain distribution
   std::cout << "~~~~~~GRAIN SIZE DETAILS~~~~~~~" << std::endl;
-  std::cout << "| PROP |" << " SIZE |" << "| FALL VELOCITY   |" << std::endl;
+  std::cout << "| PROP\t|" << " SIZE   \t|" << " FALL VELOCITY" << std::endl;
   for (unsigned n=0; n<=G_MAX-1; n++)
-	  std::cout << dprop[n] << " | " << dsize[n] << " | " << fallVelocity[n] << std::endl;
+	  std::cout << "| " << dprop[n] << "\t| " << dsize[n] << "   \t| " << fallVelocity[n] << std::endl;
 
   std::cout << "SEDIMENT LAW:                  ";
     if (einstein) std::cout << "Einstein" << std::endl;
