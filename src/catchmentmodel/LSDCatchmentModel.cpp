@@ -2696,7 +2696,7 @@ void LSDCatchmentModel::catchment_water_input_and_hydrology( double flow_timeste
   // Not all compilers support reduction of class member variable,
   // so you'll need to fix it (GCC 6.2 seeps to support it)
   // workaround by just creating local copy of waterinput here
-  //#pragma omp parallel for reduction(+:waterinput)
+  #pragma omp parallel for reduction(+:waterinput)
   for (unsigned i=1; i<imax; i++)
   {
     for (unsigned j=1; j<jmax; j++)
@@ -3571,7 +3571,7 @@ double LSDCatchmentModel::erode(double mult_factor)
               if (tau > bedrock_erosion_threshold)
               {
                 double amount = 0; // amount is amount of erosion into the bedrock.
-                amount = std::pow(bedrock_erosion_rate * tau, 1.5) * time_step * mult_factor * 0.000000317; // las value to turn it into erosion per year (number of years per second)
+                amount = std::pow(tau - bedrock_erosion_threshold, 1.5) * bedrock_erodibility_coeff_ke * time_step * mult_factor * 0.000000317; // last value to turn it into erosion per year (number of years per second
                 bedrock[x][y] -= amount;
                 // now add amount of bedrock eroded into sediment proportions.
                 for (unsigned int n2 = 1; n2 <= G_MAX - 1; n2++)
